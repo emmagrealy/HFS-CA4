@@ -84,6 +84,7 @@
 				</div>
 			</div>
 			<input type="hidden" value="${sessionScope.totalPrice }" name="tp" />
+			<input type="hidden" value="${sessionScope.quantity }" name="quantity" />
 			<div class="form-group">
 				<input type="submit" class="btn btn-secondary"
 					value="Complete Purchase" />

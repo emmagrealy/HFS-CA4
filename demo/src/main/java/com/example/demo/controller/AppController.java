@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.demo.cardValidationTemplateMethod.AbstractCardValidator;
 import com.example.demo.cardValidationTemplateMethod.VisaValidation;
+import com.example.demo.cardValidationTemplateMethod.MastercardValidation;
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
 import com.example.demo.order.ItemOrders;
@@ -165,6 +167,8 @@ public class AppController {
 		System.out.println(newItem.toString());
 
 		cart.add(newItem);
+		
+		newItem.setQuantity(newItem.getQuantity() -1);
 
 		HttpSession session = request.getSession();
 		session.setAttribute("list", cart);
@@ -189,20 +193,26 @@ public class AppController {
 		if (cardType.equals("Visa Card")) {
 			validator = new VisaValidation(AppController.this, cardName, cardNumber, expiryDateMonth, 
 					expiryDateYear, cvv);
+			
+		} else if (cardType.equals("MasterCard")) {
+			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
+					expiryDateYear, cvv);
+
 		}
+		
 
 		result = validator.validate();
 
 		if (!result) {
-
 			request.setAttribute("error", "Invalid Card Details");
 			return "purchasePage";
+			
 		} else {
 			double totalPrice = Double.parseDouble(request.getParameter("tp"));
 			ItemOrders newOrder = new ItemOrders(totalPrice);
 			orderService.addOrder(newOrder);
-
 			ItemOrders newOrder1 = orderService.getOrderById(newOrder.getOrderId());
+			
 			for (StockItem s : cart) {
 				newOrder1.getProducts().add(s);
 			}
