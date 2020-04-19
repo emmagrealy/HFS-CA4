@@ -21,19 +21,75 @@
 
 		<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="searchProducts">Search Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="myCart">My Cart</a></li>
+				<li class="nav-item"><a class="nav-link" href="searchProducts">Search
+						Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="myCart">My
+						Cart</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
 			</ul>
 		</div>
 	</nav>
-	
-	<form class="form-horizontal" method="post" action="completePurchase">
-		<input type="hidden" value="${sessionScope.totalPrice }" name="tp" />
-		<input type="submit" class="btn btn-secondary" value="Complete Purchase" />
-	</form>
+
+	<br>
+	<div class="container text-center">
+		<h2>Enter Card Details:</h2>
+		<br>
+		<form class="form-horizontal" method="post" action="completePurchase"
+			style="text-align: center;">
+			<c:if test="${not empty error}">
+				<div class="alert alert-primary col-md-4 container">
+					<c:out value="${error}"></c:out>
+				</div>
+			</c:if>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<input type="text" name="cardType"
+						value="${sessionScope.customer.paymentMethod }"
+						class="form-control" readonly />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<input type="text" name="cardName" class="form-control"
+						placeholder="Name on Card" />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<input type="number" name="cardNumber" class="form-control"
+						placeholder="Card Number" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-4"></div>
+				<div class="col-xs-3 col-sm-2">
+					<div class="form-group">
+						<input type="number" name="expiryDateMonth" class="form-control"
+							placeholder="Month" />
+					</div>
+				</div>
+				<div class="col-xs-3 col-sm-2">
+					<div class="form-group">
+						<input type="number" name="expiryDateYear" class="form-control"
+							placeholder="Year" />
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<input type="number" name="cvv" class="form-control"
+						placeholder="CVV" />
+				</div>
+			</div>
+			<input type="hidden" value="${sessionScope.totalPrice }" name="tp" />
+			<div class="form-group">
+				<input type="submit" class="btn btn-secondary"
+					value="Complete Purchase" />
+			</div>
+		</form>
+	</div>
 
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.js"></script>
