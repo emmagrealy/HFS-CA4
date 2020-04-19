@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,20 +12,28 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
+import com.example.demo.order.ItemOrders;
+import com.example.demo.order.ItemOrdersService;
 import com.example.demo.user.Customer;
 import com.example.demo.user.CustomerServices;
 
 @Controller
 public class AppController {
 
+	private ArrayList<StockItem> cart = new ArrayList<StockItem>();
+	
 	@Autowired
 	private CustomerServices custService;
 	
 	@Autowired
 	private StockItemService stockService;
+	
+	@Autowired
+	private ItemOrdersService orderService;
 	
 	@RequestMapping("/welcomePage")
 	public String welcome() {
@@ -37,6 +47,7 @@ public class AppController {
 	
 	@RequestMapping("/logout")
 	public String logout(HttpSession session) {
+		cart.clear();
 		session.invalidate();
 		return "welcomePage";
 	}
@@ -49,6 +60,25 @@ public class AppController {
 	@RequestMapping("/searchProducts")
 	public String searchProducts() {
 		return "searchProducts";
+	}
+	
+	@RequestMapping("/purchase")
+	public String purchase() {
+		return "purchasePage";
+	}
+	
+	@RequestMapping("/myCart")
+	public String myCart(HttpSession session) {
+		int count=0;
+		double price=0.0;
+		for(StockItem currItem : cart) {
+			count = count+1;
+			double prodPrice = currItem.getPrice();
+			price = price + prodPrice;
+		}
+		session.setAttribute("quantity", count);
+		session.setAttribute("totalPrice", price);
+		return "myCart";
 	}
 	
 	@PostMapping("/addUser")
@@ -126,4 +156,40 @@ public class AppController {
 			return "searchProducts";
 		}
 	}		
+	
+	@RequestMapping("/addToCart")
+	public String addCart(HttpServletRequest request) {
+		int id = Integer.parseInt(request.getParameter("itemId"));
+		StockItem newItem = stockService.getItemById(id);
+		System.out.println(newItem.toString());
+		
+		cart.add(newItem);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("list", cart);
+		
+		return "successPage";
+	}
+	
+	@PostMapping("/completePurchase")
+	public String completePurchase(@SessionAttribute("customer") Customer c, HttpServletRequest request, HttpSession session) {
+		
+		double totalPrice = Double.parseDouble(request.getParameter("tp"));
+		ItemOrders newOrder = new ItemOrders(totalPrice);
+		orderService.addOrder(newOrder);
+		
+		ItemOrders newOrder1 = orderService.getOrderById(newOrder.getOrderId());
+		for (StockItem s : cart) {
+			newOrder1.getProducts().add(s);
+		}
+		orderService.updateOrder(newOrder1.getOrderId(), newOrder1);
+		
+		int customerId = c.getUserId();
+		Customer newCustomer = custService.getCustomerById(customerId);
+		newCustomer.getUserOrders().add(newOrder1);
+		custService.updateCustomer(customerId, newCustomer);
+		 
+		cart.clear();
+		return "successPage";
+	}
 }

@@ -1,9 +1,17 @@
 package com.example.demo.user;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.example.demo.order.ItemOrders;
 
 @Entity
 public class Customer {
@@ -18,6 +26,9 @@ public class Customer {
 	private String password;
 	private String shippingAddress;
 	private String paymentMethod;
+	
+	@OneToMany(targetEntity=ItemOrders.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<ItemOrders> userOrders = new HashSet<ItemOrders>();
 	
 	public Customer() {
 		
@@ -89,5 +100,22 @@ public class Customer {
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
-		
+
+	public Set<ItemOrders> getUserOrders() {
+		return userOrders;
+	}
+
+	public void setUserOrders(Set<ItemOrders> userOrders) {
+		this.userOrders = userOrders;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+			
+	
 }
