@@ -24,7 +24,6 @@ public class StockItemService {
 		return stockItemRepository.findOne(id);
 	}
 	
-	
 	public void addItem(StockItem item) {
 		stockItemRepository.save(item);
 	}

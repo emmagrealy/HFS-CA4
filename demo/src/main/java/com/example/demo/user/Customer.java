@@ -34,6 +34,12 @@ public class Customer {
 	public Customer() {
 		
 	}
+	
+	public Customer(int id, String firstName, String lastName) {
+		this.userId = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
 	public Customer(String firstName, String lastName, String dob, String username, String password,
 			String shippingAddress, String paymentMethod, String loyaltyCard) {
@@ -125,6 +131,13 @@ public class Customer {
 
 	public void setLoyaltyCard(String loyaltyCard) {
 		this.loyaltyCard = loyaltyCard;
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob
+				+ ", username=" + username + ", password=" + password + ", shippingAddress=" + shippingAddress
+				+ ", paymentMethod=" + paymentMethod + ", loyaltyCard=" + loyaltyCard + "]";
 	}
 	
 	
