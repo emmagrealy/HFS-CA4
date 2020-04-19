@@ -4,13 +4,13 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Electronic Store</title>
+<title>Health Food Store</title>
 </head>
 <link href=static/css/journal/bootstrap.min.css rel="stylesheet">
 <body>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-		<a class="navbar-brand" href="/successPage">Electronic Store</a>
+		<a class="navbar-brand" href="/successPage">Health Food Store</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarColor01" aria-controls="navbarColor01"
 			aria-expanded="false" aria-label="Toggle navigation">

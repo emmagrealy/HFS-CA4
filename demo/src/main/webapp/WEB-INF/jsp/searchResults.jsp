@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
 <!DOCTYPE html>
@@ -21,8 +21,9 @@
 
 		<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="addProduct">Add Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="searchProducts">Search Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="searchProducts">Search
+						Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">My Cart</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">About</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -31,19 +32,11 @@
 		</div>
 	</nav>
 	
-	<div class="container text-center">
-		<br>
-		<h3>${sessionScope.admin } Page</h3>
-		<hr>
-	</div>
-	
-	<div class="container text-center">
-		<h2>Items in Stock</h2>
-	</div>
-	
 	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
 			url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
-		<sql:query dataSource="${con }" sql="select * from stock_item" var="stock" />
+		<sql:query dataSource="${con }"
+		sql="select * from stock_item where ${sessionScope.searchBy } like '%${sessionScope.query }%'" 
+		var="stock" />
 		
 		<table>
 			<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
@@ -57,7 +50,6 @@
 					Manufacturer: <c:out value="${stockItem.manufacturer}" /><br>
 					Category: <c:out value="${stockItem.category}" /><br>
 					Price: €<c:out value="${stockItem.price}" /><br> 
-					Quantity: <c:out value="${stockItem.quantity }"/>
 					<br><br>
 				</td>
 				<td width="100">&nbsp</td>
@@ -66,9 +58,7 @@
 				</c:if>
 			</c:forEach>
 		</table>
+	
 
-	<script src="static/js/jquery.min.js"></script>
-	<script src="static/js/bootstrap.js"></script>
-	<script src="static/js/npm.js"></script>
 </body>
 </html>

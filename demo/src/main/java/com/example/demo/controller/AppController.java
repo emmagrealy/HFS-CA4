@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
@@ -43,6 +44,11 @@ public class AppController {
 	@RequestMapping("/addProduct")
 	public String addProd() {
 		return "addProduct";
+	}
+	
+	@RequestMapping("/searchProducts")
+	public String searchProducts() {
+		return "searchProducts";
 	}
 	
 	@PostMapping("/addUser")
@@ -95,4 +101,29 @@ public class AppController {
 		
 		return "adminSuccess";
 	}
+	
+	@RequestMapping("/search")
+	public String searchQ(@RequestParam("searchQ") String searchQ, HttpServletRequest request,HttpSession session) {
+		if(request.getParameter("category") != null) {
+			String type = "category";
+			session.setAttribute("searchBy", type);
+			session.setAttribute("query", searchQ);
+			return "searchResults";
+			
+		} else if (request.getParameter("manufacturer") != null) {
+			String type = "manufacturer";
+			session.setAttribute("searchBy", type);
+			session.setAttribute("query", searchQ);
+			return "searchResults";
+			
+		} else if (request.getParameter("title") != null) {
+			String type = "title";
+			session.setAttribute("searchBy", type);
+			session.setAttribute("query", searchQ);
+			return "searchResults";
+			
+		} else {
+			return "searchProducts";
+		}
+	}		
 }

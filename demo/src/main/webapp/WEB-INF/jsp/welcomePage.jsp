@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Electronic Store</title>
+<title>Health Food Store</title>
 </head>
 <link href=static/css/journal/bootstrap.min.css rel="stylesheet">
 <body style="background-color: #f8f9fa;;">
