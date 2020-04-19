@@ -16,17 +16,20 @@ public class StockItem {
 	private double price;
 	private String category;
 	private String image;
+	private int quantity;
 	
 	public StockItem() {
 		
 	}
 
-	public StockItem(String title, String manufacturer, double price, String category, String image) {
+	public StockItem(String title, String manufacturer, double price, String category, String image,
+			int quantity) {
 		this.title = title;
 		this.manufacturer = manufacturer;
 		this.price = price;
 		this.category = category;
 		this.image = image;
+		this.quantity = quantity;
 	}
 
 	public String getTitle() {
@@ -68,5 +71,14 @@ public class StockItem {
 	public void setImage(String image) {
 		this.image = image;
 	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 		
+	
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.demo.item.StockItem;
+import com.example.demo.item.StockItemService;
 import com.example.demo.user.Customer;
 import com.example.demo.user.CustomerServices;
 
@@ -19,6 +21,9 @@ public class AppController {
 	@Autowired
 	private CustomerServices custService;
 	
+	@Autowired
+	private StockItemService stockService;
+	
 	@RequestMapping("/welcomePage")
 	public String welcome() {
 		return "welcomePage";
@@ -27,6 +32,17 @@ public class AppController {
 	@RequestMapping("/successPage")
 	public String success() {
 		return "successPage";
+	}
+	
+	@RequestMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "welcomePage";
+	}
+	
+	@RequestMapping("/addProduct")
+	public String addProd() {
+		return "addProduct";
 	}
 	
 	@PostMapping("/addUser")
@@ -55,9 +71,28 @@ public class AppController {
 			c = custService.getUserByUsernameAndPassword(username, password);
 			session.setAttribute("customer", c);
 			return "successPage";
+		} else if (username.equalsIgnoreCase("Admin") && password.equalsIgnoreCase("Admin123")) {
+			session.setAttribute("admin", username);
+			return "adminSuccess";
+			
 		} else {
 			request.setAttribute("error", "Invalid Username or Password");
 			return "welcomePage";
 		}
+	}
+	
+	@PostMapping("/addStockItem")
+	public String addStock(HttpServletRequest request) {
+		String title = request.getParameter("title");
+		String manu = request.getParameter("manufacturer");
+		double price = Double.parseDouble(request.getParameter("price"));
+		String category = request.getParameter("category");
+		String image = request.getParameter("image");
+		int quantity = Integer.parseInt(request.getParameter("quantity"));
+		
+		StockItem si = new StockItem(title, manu, price, category, image, quantity);
+		stockService.addItem(si);
+		
+		return "adminSuccess";
 	}
 }
