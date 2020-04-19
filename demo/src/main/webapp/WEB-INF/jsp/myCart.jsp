@@ -34,9 +34,12 @@
 		<br>
 		<h3>${sessionScope.customer.firstName }'s Cart</h3>
 		<hr>
+		
 		Cart Quantity: ${sessionScope.quantity } Items<br>
-		Total Cost: €${sessionScope.totalPrice } <br>
+		Sub-Total: €${sessionScope.subTotal } <br>
+		
 		<form class="form-horizontal" method="post" action="purchase">
+			<input type="hidden" name="lcard" value="${sessionScope.loyalty }"/>
 			<input type="submit" class="btn btn-secondary" value="Purchase Items" />
 		</form>
 		<hr>

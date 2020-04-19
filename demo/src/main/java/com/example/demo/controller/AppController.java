@@ -15,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.demo.cardValidationTemplateMethod.AbstractCardValidator;
-import com.example.demo.cardValidationTemplateMethod.VisaValidation;
 import com.example.demo.cardValidationTemplateMethod.MastercardValidation;
+import com.example.demo.cardValidationTemplateMethod.VisaValidation;
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
+import com.example.demo.loyaltyCardsStrategy.BasicCard;
+import com.example.demo.loyaltyCardsStrategy.LoyaltyCard;
+import com.example.demo.loyaltyCardsStrategy.NoCard;
+import com.example.demo.loyaltyCardsStrategy.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
 import com.example.demo.user.Customer;
@@ -71,7 +75,7 @@ public class AppController {
 	}
 
 	@RequestMapping("/myCart")
-	public String myCart(HttpSession session) {
+	public String myCart(@SessionAttribute("customer") Customer c,HttpSession session, HttpServletRequest request) {
 		int count = 0;
 		double price = 0.0;
 		for (StockItem currItem : cart) {
@@ -79,8 +83,29 @@ public class AppController {
 			double prodPrice = currItem.getPrice();
 			price = price + prodPrice;
 		}
+		
+		String loyaltyCard = c.getLoyaltyCard();
+		if (loyaltyCard.equals("Basic")) {
+			LoyaltyCard lc = new BasicCard();
+			double discount = lc.applyTheDiscount();
+			double totalPrice = price - (price * discount);
+			session.setAttribute("totalPrice", totalPrice);
+		}
+		else if (loyaltyCard.equals("Premium")) {
+			LoyaltyCard lc = new PremiumCard();
+			double discount = lc.applyTheDiscount();
+			double totalPrice = price - (price * discount);
+			session.setAttribute("totalPrice", totalPrice);
+		}
+		else {
+			LoyaltyCard lc = new NoCard();
+			double discount = lc.applyTheDiscount();
+			double totalPrice = price - (price * discount);
+			session.setAttribute("totalPrice", totalPrice);
+		}
+		
 		session.setAttribute("quantity", count);
-		session.setAttribute("totalPrice", price);
+		session.setAttribute("subTotal", price);
 		return "myCart";
 	}
 
@@ -93,10 +118,12 @@ public class AppController {
 		String password = request.getParameter("password");
 		String shipAdd = request.getParameter("shippingAddress");
 		String pay = request.getParameter("paymentMethod");
+		String loyaltyCard = request.getParameter("lc");
 
-		Customer c = new Customer(fName, lName, dob, username, password, shipAdd, pay);
+		Customer c = new Customer(fName, lName, dob, username, password, shipAdd, pay, loyaltyCard);
 		custService.addCustomer(c);
 		session.setAttribute("customer", c);
+		session.setAttribute("loyalty", loyaltyCard);
 
 		return "successPage";
 	}
@@ -109,6 +136,7 @@ public class AppController {
 		if (custService.getUserByUsernameAndPassword(username, password) != null) {
 			c = custService.getUserByUsernameAndPassword(username, password);
 			session.setAttribute("customer", c);
+			session.setAttribute("loyalty", c.getLoyaltyCard());
 			return "successPage";
 		} else if (username.equalsIgnoreCase("Admin") && password.equalsIgnoreCase("Admin123")) {
 			session.setAttribute("admin", username);
@@ -193,13 +221,12 @@ public class AppController {
 		if (cardType.equals("Visa Card")) {
 			validator = new VisaValidation(AppController.this, cardName, cardNumber, expiryDateMonth, 
 					expiryDateYear, cvv);
-			
+
 		} else if (cardType.equals("MasterCard")) {
 			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
 					expiryDateYear, cvv);
 
 		}
-		
 
 		result = validator.validate();
 

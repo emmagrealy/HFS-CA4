@@ -26,6 +26,7 @@ public class Customer {
 	private String password;
 	private String shippingAddress;
 	private String paymentMethod;
+	private String loyaltyCard;
 	
 	@OneToMany(targetEntity=ItemOrders.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<ItemOrders> userOrders = new HashSet<ItemOrders>();
@@ -35,7 +36,7 @@ public class Customer {
 	}
 
 	public Customer(String firstName, String lastName, String dob, String username, String password,
-			String shippingAddress, String paymentMethod) {
+			String shippingAddress, String paymentMethod, String loyaltyCard) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dob = dob;
@@ -43,6 +44,7 @@ public class Customer {
 		this.password = password;
 		this.shippingAddress = shippingAddress;
 		this.paymentMethod = paymentMethod;
+		this.loyaltyCard = loyaltyCard;
 	}
 
 	public String getFirstName() {
@@ -116,6 +118,15 @@ public class Customer {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-			
+
+	public String getLoyaltyCard() {
+		return loyaltyCard;
+	}
+
+	public void setLoyaltyCard(String loyaltyCard) {
+		this.loyaltyCard = loyaltyCard;
+	}
+	
+	
 	
 }

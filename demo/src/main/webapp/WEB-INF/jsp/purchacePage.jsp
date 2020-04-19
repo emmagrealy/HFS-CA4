@@ -19,7 +19,7 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<div class="collapse navbar-collapse" id="navbarColor01">
+<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="searchProducts">Search
 						Products</a></li>
@@ -83,8 +83,31 @@
 						placeholder="CVV" />
 				</div>
 			</div>
-			<input type="hidden" value="${sessionScope.totalPrice }" name="tp" />
-			<input type="hidden" value="${sessionScope.quantity }" name="quantity" />
+
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<label>Sub-Total</label> 
+					<input type="text" name="sub" value="${sessionScope.subTotal }"
+						class="form-control" readonly />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<label>Loyalty Card Discount Type</label> 
+					<input type="text" name="lc" value="${sessionScope.customer.loyaltyCard }"
+						class="form-control" readonly />
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-4 container">
+					<label>Total Price after Discount</label> 
+					<input type="text" name="tp" value="${sessionScope.totalPrice }"
+						class="form-control" readonly />
+				</div>
+			</div>
+			<!--  <input type="hidden" value="${sessionScope.totalPrice }" name="tp" /> -->
+			<input type="hidden" value="${sessionScope.quantity }"
+				name="quantity" />
 			<div class="form-group">
 				<input type="submit" class="btn btn-secondary"
 					value="Complete Purchase" />
