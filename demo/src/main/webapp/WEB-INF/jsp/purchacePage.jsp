@@ -29,38 +29,14 @@
 			</ul>
 		</div>
 	</nav>
-	<div class="container text-center">
-		<br>
-		<h2>Search Results</h2>
-		<hr>
-	</div>
+	
+	<form class="form-horizontal" method="post" action="completePurchase">
+		<input type="hidden" value="${sessionScope.totalPrice }" name="tp" />
+		<input type="submit" class="btn btn-secondary" value="Complete Purchase" />
+	</form>
 
-	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
-		url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
-	<sql:query dataSource="${con }"
-		sql="select * from stock_item where ${sessionScope.searchBy } like '%${sessionScope.query }%'"
-		var="stock" />
-
-	<table>
-		<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
-			<c:if test="${not status.first and status.index % 4 == 0}">
-				<tr>
-			</c:if>
-			<td width="100">&nbsp</td>
-			<td width="200"><img src="images/${stockItem.image}"
-				height="200" width="180" /><br> <c:out
-					value="${stockItem.title}" /><br> Manufacturer: <c:out
-					value="${stockItem.manufacturer}" /><br> Category: <c:out
-					value="${stockItem.category}" /><br> Price: €<c:out
-					value="${stockItem.price}" /><br> <br>
-			<br></td>
-			<td width="100">&nbsp</td>
-			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
-				</tr>
-			</c:if>
-		</c:forEach>
-	</table>
-
-
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/bootstrap.js"></script>
+	<script src="static/js/npm.js"></script>
 </body>
 </html>

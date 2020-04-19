@@ -19,10 +19,10 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<div class="collapse navbar-collapse" id="navbarColor01">
+<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="addProduct">Add Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="searchProducts">Search Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="#">Search Products</a></li>
 				<li class="nav-item"><a class="nav-link" href="#">About</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
@@ -39,6 +39,7 @@
 	
 	<div class="container text-center">
 		<h2>Items in Stock</h2>
+		<hr>
 	</div>
 	
 	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"

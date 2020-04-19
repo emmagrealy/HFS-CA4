@@ -29,49 +29,39 @@
 			</ul>
 		</div>
 	</nav>
-	
+
 	<div class="container text-center">
 		<br>
-		<h3>Welcome ${sessionScope.customer.firstName }</h3>
+		<h3>${sessionScope.customer.firstName }'s Cart</h3>
+		<hr>
+		Cart Quantity: ${sessionScope.quantity } Items<br>
+		Total Cost: €${sessionScope.totalPrice } <br>
+		<form class="form-horizontal" method="post" action="purchase">
+			<input type="submit" class="btn btn-secondary" value="Purchase Items" />
+		</form>
 		<hr>
 	</div>
-	
-	<div class="container text-center">
-		<h2>Full list of Products</h2>
-	</div>
-	
-	
-	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
-			url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
-		<sql:query dataSource="${con }" sql="select * from stock_item" var="stock" />
-		
-		<table>
-			<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
-				<c:if test="${not status.first and status.index % 4 == 0}">
-					<tr>
-				</c:if>
-				<td width="100">&nbsp</td>
-				<td width="200">
-					<img src="images/${stockItem.image}" height="200" width="180" /><br> 
-					<c:out value="${stockItem.title}" /><br>
-					Manufacturer: <c:out value="${stockItem.manufacturer}" /><br>
-					Category: <c:out value="${stockItem.category}" /><br>
-					Price: €<c:out value="${stockItem.price}" /><br> 
-					<form class="form-horizontal" method="post" action="addToCart">
-						<div class="form-group">
-							<input type="hidden" name="itemId" value="${stockItem.item_id}" />  
-							<input type="submit" class="btn btn-primary btn-sm" value="Add To Cart" />
-						</div>
-					</form> 
-					<br><br>
-					
-				</td>
-				<td width="100">&nbsp</td>
-				<c:if test="${status.first and status.index % 4 == 4 or status.last}">
-					</tr>
-				</c:if>
-			</c:forEach>
-		</table>
+
+	<table>
+		<c:forEach var="cartObj" items="${sessionScope.list}" varStatus="status">
+			<c:if test="${not status.first and status.index % 4 == 0}">
+				<tr>
+			</c:if>
+			<td width="100">&nbsp</td>
+			<td width="200">
+				<img src="images/${cartObj.image}" height="200" width="180" /><br> 
+				<c:out value="${cartObj.title}" /><br>
+				Manufacturer: <c:out value="${cartObj.manufacturer}" /><br>
+				Category: <c:out value="${cartObj.category}" /><br> 
+				Price: €<c:out value="${cartObj.price}" /><br> 
+				<br><br>
+			</td>
+			<td width="100">&nbsp</td>
+			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
+				</tr>
+			</c:if>
+		</c:forEach>
+	</table>
 
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.js"></script>
