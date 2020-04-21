@@ -21,57 +21,64 @@
 
 		<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="searchProducts">Search Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="myCart">My Cart</a></li>
+				<li class="nav-item"><a class="nav-link" href="searchProducts">Search
+						Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="myCart">My
+						Cart</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
 			</ul>
 		</div>
 	</nav>
-	
+
 	<div class="container text-center">
 		<br>
 		<h3>Welcome ${sessionScope.customer.firstName }</h3>
 		<hr>
 	</div>
-	
+
 	<div class="container text-center">
 		<h2>Full list of Products</h2>
 	</div>
-	
-	
+
+
 	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
-			url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
-		<sql:query dataSource="${con }" sql="select * from stock_item" var="stock" />
-		
-		<table>
-			<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
-				<c:if test="${not status.first and status.index % 4 == 0}">
-					<tr>
-				</c:if>
-				<td width="100">&nbsp</td>
-				<td width="200">
-					<img src="images/${stockItem.image}" height="200" width="180" /><br> 
-					<c:out value="${stockItem.title}" /><br>
-					Manufacturer: <c:out value="${stockItem.manufacturer}" /><br>
-					Category: <c:out value="${stockItem.category}" /><br>
-					Price: €<c:out value="${stockItem.price}" /><br> 
-					<form class="form-horizontal" method="post" action="addToCart">
-						<div class="form-group">
-							<input type="hidden" name="itemId" value="${stockItem.item_id}" />  
-							<input type="submit" class="btn btn-primary btn-sm" value="Add To Cart" />
-						</div>
-					</form> 
-					<br><br>
-					
-				</td>
-				<td width="100">&nbsp</td>
-				<c:if test="${status.first and status.index % 4 == 4 or status.last}">
-					</tr>
-				</c:if>
-			</c:forEach>
-		</table>
+		url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
+	<sql:query dataSource="${con }" sql="select * from stock_item"
+		var="stock" />
+
+	<table>
+		<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
+			<c:if test="${not status.first and status.index % 4 == 0}">
+				<tr>
+			</c:if>
+			<td width="100">&nbsp</td>
+			<td width="200"><img src="images/${stockItem.image}"
+				height="200" width="180" /><br> <c:out
+					value="${stockItem.title}" /><br> Manufacturer: <c:out
+					value="${stockItem.manufacturer}" /><br> Category: <c:out
+					value="${stockItem.category}" /><br> Price: €<c:out
+					value="${stockItem.price}" /><br> 
+				<c:choose>
+					<c:when test="${!stockItem.state}">Out of Stock</c:when>
+					<c:when test="${stockItem.state}">
+						<form class="form-horizontal" method="post" action="addToCart">
+							<div class="form-group">
+								<input type="hidden" name="itemId" value="${stockItem.item_id}" />
+								<input type="submit" class="btn btn-primary btn-sm"
+									value="Add To Cart" />
+							</div>
+						</form>
+					</c:when>
+				</c:choose> <br>
+			<br></td>
+			<td width="100">&nbsp</td>
+			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
+				</tr>
+			</c:if>
+		</c:forEach>
+	</table>
 
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.js"></script>

@@ -17,19 +17,21 @@ public class StockItem {
 	private String category;
 	private String image;
 	private int quantity;
+	private boolean state;
 	
 	public StockItem() {
 		
 	}
 
 	public StockItem(String title, String manufacturer, double price, String category, String image,
-			int quantity) {
+			int quantity, boolean state) {
 		this.title = title;
 		this.manufacturer = manufacturer;
 		this.price = price;
 		this.category = category;
 		this.image = image;
 		this.quantity = quantity;
+		this.state = state;
 	}
 
 	public String getTitle() {
@@ -78,6 +80,16 @@ public class StockItem {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+	
+	
+
+	public boolean isState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
 	}
 
 	@Override

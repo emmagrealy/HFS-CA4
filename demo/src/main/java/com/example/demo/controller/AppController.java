@@ -29,6 +29,9 @@ import com.example.demo.loyaltyCardsStrategyAndSingleton.NoCard;
 import com.example.demo.loyaltyCardsStrategyAndSingleton.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
+import com.example.demo.stockState.InStock;
+import com.example.demo.stockState.OutOfStock;
+import com.example.demo.stockState.StockState;
 import com.example.demo.user.Customer;
 import com.example.demo.user.CustomerServices;
 
@@ -199,15 +202,26 @@ public class AppController {
 	}
 
 	@PostMapping("/addStockItem")
-	public String addStock(HttpServletRequest request) {
+	public String addStock(HttpServletRequest request, HttpSession session) {
 		String title = request.getParameter("title");
 		String manu = request.getParameter("manufacturer");
 		double price = Double.parseDouble(request.getParameter("price"));
 		String category = request.getParameter("category");
 		String image = request.getParameter("image");
 		int quantity = Integer.parseInt(request.getParameter("quantity"));
+		
+		boolean state;
+		StockState noStock = new OutOfStock();
+		StockState hasStock = new InStock();
+		
+		if (quantity <= 0) {
+			state = noStock.stateOfStock();
+		}
+		else {
+			state = hasStock.stateOfStock();
+		}
 
-		StockItem si = new StockItem(title, manu, price, category, image, quantity);
+		StockItem si = new StockItem(title, manu, price, category, image, quantity, state);
 		stockService.addItem(si);
 
 		return "adminSuccess";
