@@ -23,7 +23,7 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="addProduct">Add
 						Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">Search
+				<li class="nav-item"><a class="nav-link" href="adminSearch">Search
 						Products</a></li>
 				<li class="nav-item"><a class="nav-link" href="customerDetails">All
 						Customers Registered</a></li>
@@ -61,13 +61,19 @@
 				<c:out value="${stockItem.title}" /><br> 
 				Manufacturer: <c:out value="${stockItem.manufacturer}" /><br> 
 				Category: <c:out value="${stockItem.category}" /><br> 
-				Price: €<c:out value="${stockItem.price}" /><br>
-				Quantity: <c:out value="${stockItem.quantity }" /> <br>
-				<br> 
+				Price: €<c:out value="${stockItem.price}" /><br> 
+				Quantity: <c:out value="${stockItem.quantity }" /> <br> <br> 
 				<c:choose>
 					<c:when test="${!stockItem.state}">Out of Stock</c:when>
 					<c:when test="${stockItem.state}">In Stock</c:when>
-				</c:choose></td>
+				</c:choose>
+				<form class="form-horizontal" method="post" action="purchaseStock">
+					<div class="form-group">
+						<input type="hidden" name="itemId" value="${stockItem.item_id}" />
+						<input type="submit" class="btn btn-primary btn-sm"
+							value="Add more to Stock" />
+					</div>
+				</form></td>
 			<td width="100">&nbsp</td>
 			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
 				</tr>

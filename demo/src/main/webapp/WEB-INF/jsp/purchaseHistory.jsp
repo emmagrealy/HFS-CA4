@@ -23,7 +23,7 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="addProduct">Add
 						Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">Search
+				<li class="nav-item"><a class="nav-link" href="adminSearch">Search
 						Products</a></li>
 				<li class="nav-item"><a class="nav-link" href="customerDetails">All
 						Customers Registered</a></li>

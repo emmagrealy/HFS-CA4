@@ -21,8 +21,10 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item"><a class="nav-link" href="addProduct">Add
 						Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
-				<li class="nav-item"><a class="nav-link" href="customerDetails">All Customers Registered</a></li>
+				<li class="nav-item"><a class="nav-link" href="adminSearch">Search
+						Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="customerDetails">All
+						Customers Registered</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>

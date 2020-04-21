@@ -12,7 +12,7 @@
 <body>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-		<a class="navbar-brand" href="/successPage">Health Food Store</a>
+		<a class="navbar-brand" href="/adminSuccess">Health Food Store</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarColor01" aria-controls="navbarColor01"
 			aria-expanded="false" aria-label="Toggle navigation">
@@ -33,35 +33,28 @@
 			</ul>
 		</div>
 	</nav>
-
-	<div class="container text-center">
+	
+	<form class="form-horizontal" method="post" action="aSearch"
+		style="text-align: center;">
 		<br>
-		<h3>All Registered Users</h3>
-		<hr>
-	</div>
-
-	<table align="center" cellpadding="5" cellspacing="5" border="1">
-		<tr bgcolor="#FFAC9A">
-			<td><b>Customer ID</b></td>
-			<td><b>First Name</b></td>
-			<td><b>Surname</b></td>
-			<td><b>Full Details and Purchase History</b></td>
-		</tr>
-		<c:forEach var="cust" items="${sessionScope.allCust}">
-			<tr>
-				<td><c:out value="${cust.userId}" /></td>
-				<td><c:out value="${cust.firstName}" /></td>
-				<td><c:out value="${cust.lastName}" /></td>
-				<td><form class="form-horizontal" style="text-align:center" method="post" action="purchaseHistory">
-						<div class="form-group">
-							<input type="hidden" name="userId" value="${cust.userId }" />
-							<input type = "submit" value="More Details" />
-						</div>
-					</form>
-				</td>
-			</tr>
-		</c:forEach>
-	</table>
+		<b>What would you like to Search by?</b><br>
+		<input type="checkbox" name="category" value="Category"><b>Category</b> 
+		<input type="checkbox" name="manufacturer" value="Manufacturer"><b>Manufacturer</b>
+		<input type="checkbox" name="title" value="Title"><b>Title</b>
+		
+		<div class="form-group">
+			<div class="col-md-offset-4">
+				<br> <label class="col-md-2 control-label"><b>Enter
+						Search Query</b></label><br>
+				<div class="col-md-3 container">
+					<input type="text" class="form-control" name="searchQ" />
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-secondary" value="Search" />
+		</div>
+	</form>
 
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.js"></script>

@@ -12,7 +12,7 @@
 <body>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-		<a class="navbar-brand" href="/successPage">Health Food Store</a>
+		<a class="navbar-brand" href="/adminSuccess">Health Food Store</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarColor01" aria-controls="navbarColor01"
 			aria-expanded="false" aria-label="Toggle navigation">
@@ -21,16 +21,19 @@
 
 		<div class="collapse navbar-collapse" id="navbarColor01">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="searchProducts">Search
+				<li class="nav-item"><a class="nav-link" href="addProduct">Add
 						Products</a></li>
-				<li class="nav-item"><a class="nav-link" href="myCart">My
-						Cart</a></li>
+				<li class="nav-item"><a class="nav-link" href="adminSearch">Search
+						Products</a></li>
+				<li class="nav-item"><a class="nav-link" href="customerDetails">All
+						Customers Registered</a></li>
 			</ul>
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
 			</ul>
 		</div>
 	</nav>
+	
 	<div class="container text-center">
 		<br>
 		<h2>Search Results</h2>
@@ -38,7 +41,7 @@
 		<h2>Sort Results</h2>
 
 
-		<form class="form-horizontal" method="post" action="sortResults"
+		<form class="form-horizontal" method="post" action="aSortResults"
 			style="text-align: left;">
 			<div class="form-group">
 				<input type="text" class="form-control col-md-2" name="sortBy"
