@@ -11,10 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.example.demo.decorator.UserType;
 import com.example.demo.order.ItemOrders;
 
 @Entity
-public class Customer {
+public class Customer implements UserType{
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -138,6 +139,12 @@ public class Customer {
 		return "Customer [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob
 				+ ", username=" + username + ", password=" + password + ", shippingAddress=" + shippingAddress
 				+ ", paymentMethod=" + paymentMethod + ", loyaltyCard=" + loyaltyCard + "]";
+	}
+
+	@Override
+	public String login() {
+		
+		return "successPage";
 	}
 	
 	

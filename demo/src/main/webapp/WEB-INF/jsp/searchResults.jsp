@@ -33,16 +33,38 @@
 		<br>
 		<h2>Search Results</h2>
 		<hr>
+		<h2>Sort Results</h2>
+		<form class="form-horizontal" method="post" action="sortResults">
+			<div class="form-group">
+			<input type="text" class="form-control col-md-2" name="sortBy" autocomplete="off"
+				placeholder="Sort By" list="sb"/>
+				<datalist id="sb">
+					<option value="Title">
+					<option value="Manufacturer">
+					<option value="Price">
+					<option value="Category">
+ 				</datalist>
+ 			<input type="text" class="form-control col-md-2" name="orderList" autocomplete="off"
+				placeholder="Order" list="order"/>
+				<datalist id="order">
+					<option value="Ascending Order">
+					<option value="Descending Order">
+ 				</datalist>
+		</div>
+		<div class="form-group">
+			<input type="submit" class="btn btn-secondary" value="Sort" />
+		</div>
+		</form>
 	</div>
 
-	<sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
+	<%-- <sql:setDataSource var="con" driver="com.mysql.jdbc.Driver"
 		url="jdbc:mysql://localhost:3306/storeDb" user="root" password="root" />
 	<sql:query dataSource="${con }"
 		sql="select * from stock_item where ${sessionScope.searchBy } like '%${sessionScope.query }%'"
-		var="stock" />
+		var="stock" /> --%>
 
 	<table>
-		<c:forEach var="stockItem" items="${stock.rows}" varStatus="status">
+		<c:forEach var="stockItem" items="${sessionScope.searchResult}" varStatus="status">
 			<c:if test="${not status.first and status.index % 4 == 0}">
 				<tr>
 			</c:if>

@@ -21,6 +21,8 @@ import com.example.demo.allCustomersDetailsIterator.PurchaseHistory;
 import com.example.demo.cardValidationTemplateMethod.AbstractCardValidator;
 import com.example.demo.cardValidationTemplateMethod.MastercardValidation;
 import com.example.demo.cardValidationTemplateMethod.VisaValidation;
+import com.example.demo.decorator.AdminUser;
+import com.example.demo.decorator.UserType;
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
 import com.example.demo.loyaltyCardsStrategyAndSingleton.BasicCard;
@@ -29,6 +31,8 @@ import com.example.demo.loyaltyCardsStrategyAndSingleton.NoCard;
 import com.example.demo.loyaltyCardsStrategyAndSingleton.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
+import com.example.demo.sortingStrategy.SortByName;
+import com.example.demo.sortingStrategy.SortingContext;
 import com.example.demo.stockState.InStock;
 import com.example.demo.stockState.OutOfStock;
 import com.example.demo.stockState.StockState;
@@ -72,13 +76,34 @@ public class AppController {
 	}
 
 	@RequestMapping("/searchProducts")
-	public String searchProducts() {
+	public String searchProductsResults() {
+		
 		return "searchProducts";
 	}
 
 	@RequestMapping("/purchase")
 	public String purchase() {
 		return "purchasePage";
+	}
+	
+	@RequestMapping("/sortResults")
+	public String sortResults(@SessionAttribute("searchResults") ArrayList<StockItem> searchStock, HttpServletRequest request, HttpSession session) {
+		String sortBy = request.getParameter("sortBy");
+		String order = request.getParameter("orderList");
+		
+		 //= (ArrayList<StockItem>) session.getAttribute("searchResult");
+		
+		
+		SortingContext context = new SortingContext();
+		if(sortBy.equals("Title")) {
+			context.setSortingMethod(new SortByName());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+		}
+		
+		
+		return "searchResults";
 	}
 	
 	@RequestMapping("/purchaseHistory")
@@ -189,11 +214,16 @@ public class AppController {
 		if (custService.getUserByUsernameAndPassword(username, password) != null) {
 			c = custService.getUserByUsernameAndPassword(username, password);
 			session.setAttribute("customer", c);
-			session.setAttribute("loyalty", c.getLoyaltyCard());	
-			return "successPage";
+			session.setAttribute("loyalty", c.getLoyaltyCard());
+			
+			UserType user1 = new Customer();
+			return user1.login();
+
 		} else if (username.equalsIgnoreCase("Admin") && password.equalsIgnoreCase("Admin123")) {
 			session.setAttribute("admin", username);
-			return "adminSuccess";
+			/*return "adminSuccess";*/
+			UserType user1 = new AdminUser();
+			return user1.login();
 
 		} else {
 			request.setAttribute("error", "Invalid Username or Password");
@@ -229,10 +259,27 @@ public class AppController {
 
 	@RequestMapping("/search")
 	public String searchQ(@RequestParam("searchQ") String searchQ, HttpServletRequest request, HttpSession session) {
+		
+		ArrayList<StockItem> items = (ArrayList<StockItem>) stockService.getAllItems();
+		ArrayList<StockItem> searchStock = new ArrayList<StockItem>();
 		if (request.getParameter("category") != null) {
-			String type = "category";
-			session.setAttribute("searchBy", type);
-			session.setAttribute("query", searchQ);
+			System.out.println(items.size());
+			System.out.println(searchQ);
+			for(StockItem s: items) {
+				if(s.getCategory().contains(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			System.out.println(searchStock.size());
+			/*SortingContext context = new SortingContext();
+			context.setSortingMethod(new SortByName());
+			context.sortAscending(searchStock);*/
+			//context.sortDescending(searchStock);
+			
+			session.setAttribute("searchResult", searchStock);
+			
+			/*session.setAttribute("searchBy", type);
+			session.setAttribute("query", searchQ);*/
 			return "searchResults";
 
 		} else if (request.getParameter("manufacturer") != null) {
@@ -261,6 +308,18 @@ public class AppController {
 		
 		newItem.setQuantity(newItem.getQuantity() -1);
 
+		boolean state;
+		StockState noStock = new OutOfStock();
+		StockState hasStock = new InStock();
+		
+		if (newItem.getQuantity() <= 0) {
+			state = noStock.stateOfStock();
+		}
+		else {
+			state = hasStock.stateOfStock();
+		}
+		newItem.setState(state);
+		
 		HttpSession session = request.getSession();
 		session.setAttribute("list", cart);
 
@@ -288,6 +347,7 @@ public class AppController {
 		} else if (cardType.equals("MasterCard")) {
 			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
 					expiryDateYear, cvv);
+
 		}
 
 		result = validator.validate();
