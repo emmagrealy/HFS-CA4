@@ -36,7 +36,7 @@
 
 	<div class="container text-center">
 		<br>
-		<h3>All Registered Users</h3>
+		<h3>Customer Details</h3>
 		<hr>
 	</div>
 
@@ -45,21 +45,58 @@
 			<td><b>Customer ID</b></td>
 			<td><b>First Name</b></td>
 			<td><b>Surname</b></td>
-			<td><b>Full Details and Purchase History</b></td>
+			<td><b>Date Of Birth</b></td>
+			<td><b>Username</b></td>
+			<td><b>Shipping Address</b></td>
+			<td><b>Chosen Payment Method</b></td>
+			<td><b>Loyalty Card Type</b></td>
 		</tr>
-		<c:forEach var="cust" items="${sessionScope.allCust}">
-			<tr>
-				<td><c:out value="${cust.userId}" /></td>
-				<td><c:out value="${cust.firstName}" /></td>
-				<td><c:out value="${cust.lastName}" /></td>
-				<td><form class="form-horizontal" style="text-align:center" method="post" action="purchaseHistory">
-						<div class="form-group">
-							<input type="hidden" name="userId" value="${cust.userId }" />
-							<input type = "submit" value="More Details" />
-						</div>
-					</form>
-				</td>
+		<tr>
+			<td>${sessionScope.viewCust.userId }</td>
+			<td>${sessionScope.viewCust.firstName }</td>
+			<td>${sessionScope.viewCust.lastName }</td>
+			<td>${sessionScope.viewCust.dob }</td>
+			<td>${sessionScope.viewCust.username }</td>
+			<td>${sessionScope.viewCust.shippingAddress }</td>
+			<td>${sessionScope.viewCust.paymentMethod }</td>
+			<td>${sessionScope.viewCust.loyaltyCard }</td>
+		</tr>
+	</table>
+
+	<div class="container text-center">
+		<hr>
+		<h3>Purchase History</h3>
+		<hr>
+	</div>
+
+	<table align="center" cellpadding="5" cellspacing="5" border="1">
+		<c:forEach var="hist" items="${sessionScope.purchHist}">
+			<tr bgcolor="#FFAC9A">
+				<td><b>Order Number</b></td>
+				<td><b>Total Price</b></td>
 			</tr>
+			<tr>
+				<td><c:out value="${hist.orderId }" /></td>
+				<td><c:out value="${hist.totalPrice }" /></td>
+			</tr>
+			<tr>
+				<td><b>Product Name</b></td>
+				<td><b>Manufacturer</b></td>
+				<td><b>Price</b></td>
+				<td><b>Category</b></td>
+				<td><b>Image</b></td>
+			</tr>
+			<c:forEach var="histItem" items="${hist.products }">
+				<tr>
+					<td><c:out value="${histItem.title }" /></td>
+					<td><c:out value="${histItem.manufacturer }" /></td>
+					<td><c:out value="${histItem.price }" /> Euro</td>
+					<td><c:out value="${histItem.category }" /></td>
+					<td><img src="images/${histItem.image }" height="50"
+						width="40" /></td>
+				</tr>
+			</c:forEach>
+
 		</c:forEach>
 	</table>
 

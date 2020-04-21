@@ -1,4 +1,4 @@
-package com.example.demo.allCustomersIterator;
+package com.example.demo.allCustomersDetailsIterator;
 
 public interface Iterator {
 

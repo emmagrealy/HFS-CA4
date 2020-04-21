@@ -29,6 +29,11 @@ public class ItemOrders {
 		
 	}
 	
+	public ItemOrders(int id, double total) {
+		this.orderId = id;
+		this.totalPrice = total;
+	}
+	
 	public ItemOrders(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
@@ -55,6 +60,11 @@ public class ItemOrders {
 
 	public void setOrderId(int orderId) {
 		this.orderId = orderId;
+	}
+
+	@Override
+	public String toString() {
+		return "ItemOrders [orderId=" + orderId + ", totalPrice=" + totalPrice + ", products=" + products + "]";
 	}
 	
 	

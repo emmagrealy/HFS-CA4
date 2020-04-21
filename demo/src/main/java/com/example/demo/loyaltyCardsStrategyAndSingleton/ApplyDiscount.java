@@ -1,4 +1,4 @@
-package com.example.demo.loyaltyCardsStrategy;
+package com.example.demo.loyaltyCardsStrategyAndSingleton;
 
 public interface ApplyDiscount {
 

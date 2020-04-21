@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,17 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.example.demo.allCustomersIterator.CustomerList;
-import com.example.demo.allCustomersIterator.Iterator;
+import com.example.demo.allCustomersDetailsIterator.CustomerList;
+import com.example.demo.allCustomersDetailsIterator.Iterator;
+import com.example.demo.allCustomersDetailsIterator.PurchaseHistory;
 import com.example.demo.cardValidationTemplateMethod.AbstractCardValidator;
 import com.example.demo.cardValidationTemplateMethod.MastercardValidation;
 import com.example.demo.cardValidationTemplateMethod.VisaValidation;
 import com.example.demo.item.StockItem;
 import com.example.demo.item.StockItemService;
-import com.example.demo.loyaltyCardsStrategy.BasicCard;
-import com.example.demo.loyaltyCardsStrategy.LoyaltyCard;
-import com.example.demo.loyaltyCardsStrategy.NoCard;
-import com.example.demo.loyaltyCardsStrategy.PremiumCard;
+import com.example.demo.loyaltyCardsStrategyAndSingleton.BasicCard;
+import com.example.demo.loyaltyCardsStrategyAndSingleton.LoyaltyCard;
+import com.example.demo.loyaltyCardsStrategyAndSingleton.NoCard;
+import com.example.demo.loyaltyCardsStrategyAndSingleton.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
 import com.example.demo.user.Customer;
@@ -76,14 +78,41 @@ public class AppController {
 		return "purchasePage";
 	}
 	
+	@RequestMapping("/purchaseHistory")
+	public String purchaseHist(HttpServletRequest request, HttpSession session) {
+		int custId = Integer.parseInt(request.getParameter("userId"));
+		Customer c = custService.getCustomerById(custId);
+		session.setAttribute("viewCust", c);
+		
+		final ArrayList<ItemOrders> orders;
+		orders = (ArrayList<ItemOrders>) orderService.getAllOrders();
+		PurchaseHistory purcHist = new PurchaseHistory(orders); //List of all orders made being iterated
+		ArrayList<ItemOrders> listOrders = new ArrayList<ItemOrders>(); //New list that orders for this user added to
+		Set<ItemOrders> theOrder = c.getUserOrders(); //orders belonging to the current customer
+		
+		for (Iterator iter = purcHist.getIterator(); iter.hasNext();) {
+			ItemOrders order = (ItemOrders) iter.next();
+			
+			for(ItemOrders o: theOrder) {
+				if (order.getOrderId() == o.getOrderId()) {
+					listOrders.add(o);
+					System.out.println(o.toString());
+				}
+			}
+			
+		}
+		session.setAttribute("purchHist", listOrders);
+		return "purchaseHistory";
+	}
+	
 	@RequestMapping("/customerDetails")
 	public String customerDetails(HttpSession session) {
 		final ArrayList<Customer> customers;
 		customers = (ArrayList<Customer>) custService.getAllCustomers();
-		CustomerList namesRepository = new CustomerList(customers);
+		CustomerList listCust = new CustomerList(customers);
 		
 		ArrayList<Customer> listAll = new ArrayList<Customer>();
-		for (Iterator iter = namesRepository.getIterator(); iter.hasNext();) {
+		for (Iterator iter = listCust.getIterator(); iter.hasNext();) {
 			Customer name = (Customer) iter.next();
 			int id = name.getUserId();
 			String fName = name.getFirstName();
@@ -107,19 +136,19 @@ public class AppController {
 		
 		String loyaltyCard = c.getLoyaltyCard();
 		if (loyaltyCard.equals("Basic")) {
-			LoyaltyCard lc = new BasicCard();
+			LoyaltyCard lc = BasicCard.getInstance();
 			double discount = lc.applyTheDiscount();
 			double totalPrice = price - (price * discount);
 			session.setAttribute("totalPrice", totalPrice);
 		}
 		else if (loyaltyCard.equals("Premium")) {
-			LoyaltyCard lc = new PremiumCard();
+			LoyaltyCard lc = PremiumCard.getInstance();
 			double discount = lc.applyTheDiscount();
 			double totalPrice = price - (price * discount);
 			session.setAttribute("totalPrice", totalPrice);
 		}
 		else {
-			LoyaltyCard lc = new NoCard();
+			LoyaltyCard lc = NoCard.getInstance();
 			double discount = lc.applyTheDiscount();
 			double totalPrice = price - (price * discount);
 			session.setAttribute("totalPrice", totalPrice);
