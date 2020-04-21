@@ -31,6 +31,8 @@ import com.example.demo.loyaltyCardsStrategyAndSingleton.NoCard;
 import com.example.demo.loyaltyCardsStrategyAndSingleton.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
+import com.example.demo.reviews.Reviews;
+import com.example.demo.reviews.ReviewsService;
 import com.example.demo.sortingStrategy.SortByCategory;
 import com.example.demo.sortingStrategy.SortByManufacturer;
 import com.example.demo.sortingStrategy.SortByName;
@@ -55,6 +57,9 @@ public class AppController {
 
 	@Autowired
 	private ItemOrdersService orderService;
+	
+	@Autowired
+	private ReviewsService reviewService;
 
 	@RequestMapping("/welcomePage")
 	public String welcome() {
@@ -87,6 +92,28 @@ public class AppController {
 	@RequestMapping("/purchase")
 	public String purchase() {
 		return "purchasePage";
+	}
+	
+	@RequestMapping("/addReview")
+	public String addReview(@SessionAttribute("customer") Customer c, HttpServletRequest request, HttpSession session) {
+		String comment = request.getParameter("comment");
+		int rating = Integer.parseInt(request.getParameter("rating"));
+		
+		int itemId = Integer.parseInt(request.getParameter("itemId"));
+		
+		Reviews r = new Reviews(comment, rating);
+		reviewService.addReview(r);
+		
+		int id = c.getUserId();
+		c = custService.getCustomerById(id);
+		c.getReviews().add(r);
+		custService.updateCustomer(id, c);
+		
+		StockItem item = stockService.getItemById(itemId);
+		item.getReviews().add(r);
+		stockService.updateItem(itemId, item);
+		
+		return "successPage";
 	}
 	
 	@RequestMapping("/sortResults")
@@ -141,23 +168,30 @@ public class AppController {
 		int custId = Integer.parseInt(request.getParameter("userId"));
 		Customer c = custService.getCustomerById(custId);
 		session.setAttribute("viewCust", c);
-		
+
 		final ArrayList<ItemOrders> orders;
-		orders = (ArrayList<ItemOrders>) orderService.getAllOrders();
+		orders = (ArrayList<ItemOrders>) orderService.getAllOrders();		
+		
 		PurchaseHistory purcHist = new PurchaseHistory(orders); //List of all orders made being iterated
+		
 		ArrayList<ItemOrders> listOrders = new ArrayList<ItemOrders>(); //New list that orders for this user added to
+		
 		Set<ItemOrders> theOrder = c.getUserOrders(); //orders belonging to the current customer
+
+		for(ItemOrders o1: theOrder) {
+			System.out.println(o1.toString());
+		}
 		
 		for (Iterator iter = purcHist.getIterator(); iter.hasNext();) {
 			ItemOrders order = (ItemOrders) iter.next();
-			
+
 			for(ItemOrders o: theOrder) {
 				if (order.getOrderId() == o.getOrderId()) {
 					listOrders.add(o);
 					System.out.println(o.toString());
 				}
 			}
-			
+
 		}
 		session.setAttribute("purchHist", listOrders);
 		return "purchaseHistory";
@@ -191,6 +225,7 @@ public class AppController {
 			double prodPrice = currItem.getPrice();
 			price = price + prodPrice;
 		}
+		
 		
 		String loyaltyCard = c.getLoyaltyCard();
 		if (loyaltyCard.equals("Basic")) {

@@ -1,9 +1,17 @@
 package com.example.demo.item;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.example.demo.reviews.Reviews;
 
 @Entity
 public class StockItem {
@@ -18,6 +26,9 @@ public class StockItem {
 	private String image;
 	private int quantity;
 	private boolean state;
+	
+	@OneToMany(targetEntity=Reviews.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<Reviews> reviews = new HashSet<Reviews>();
 	
 	public StockItem() {
 		
@@ -96,6 +107,14 @@ public class StockItem {
 
 	public void setState(boolean state) {
 		this.state = state;
+	}
+	
+	public Set<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(Set<Reviews> reviews) {
+		this.reviews = reviews;
 	}
 
 	@Override

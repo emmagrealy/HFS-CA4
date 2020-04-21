@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import com.example.demo.decorator.UserType;
 import com.example.demo.order.ItemOrders;
+import com.example.demo.reviews.Reviews;
 
 @Entity
 public class Customer implements UserType{
@@ -31,6 +32,9 @@ public class Customer implements UserType{
 	
 	@OneToMany(targetEntity=ItemOrders.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<ItemOrders> userOrders = new HashSet<ItemOrders>();
+	
+	@OneToMany(targetEntity=Reviews.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<Reviews> reviews = new HashSet<Reviews>();
 	
 	public Customer() {
 		
@@ -132,6 +136,14 @@ public class Customer implements UserType{
 
 	public void setLoyaltyCard(String loyaltyCard) {
 		this.loyaltyCard = loyaltyCard;
+	}
+
+	public Set<Reviews> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(Set<Reviews> reviews) {
+		this.reviews = reviews;
 	}
 
 	@Override

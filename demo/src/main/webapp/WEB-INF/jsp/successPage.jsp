@@ -59,8 +59,7 @@
 					value="${stockItem.title}" /><br> Manufacturer: <c:out
 					value="${stockItem.manufacturer}" /><br> Category: <c:out
 					value="${stockItem.category}" /><br> Price: €<c:out
-					value="${stockItem.price}" /><br> 
-				<c:choose>
+					value="${stockItem.price}" /><br> <c:choose>
 					<c:when test="${!stockItem.state}">Out of Stock</c:when>
 					<c:when test="${stockItem.state}">
 						<form class="form-horizontal" method="post" action="addToCart">
@@ -71,8 +70,24 @@
 							</div>
 						</form>
 					</c:when>
-				</c:choose> <br>
-			<br></td>
+				</c:choose> <br> Add a Review:
+				<form class="form-horizontal" method="post" action="addReview">
+						<input type="hidden" name="itemId" value="${stockItem.item_id}" />
+						<input type="text" class="form-control col-md-11" name="comment" value="${Reviews.comment }"
+							placeholder="Comment" /> 
+						<input type="text" class="form-control col-md-11" name="rating" autocomplete="off"
+							placeholder="Rating out of 5" list="rate" />
+						<datalist id="rate">
+							<option value="1">
+							<option value="2">
+							<option value="3">
+							<option value="4">
+							<option value="5">
+						</datalist>
+						<input type="submit" class="btn btn-primary btn-sm"
+							value="Add Review" />
+					</div>
+				</form> <br></td>
 			<td width="100">&nbsp</td>
 			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
 				</tr>
