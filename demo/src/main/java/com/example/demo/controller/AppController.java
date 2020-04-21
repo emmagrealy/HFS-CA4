@@ -31,7 +31,10 @@ import com.example.demo.loyaltyCardsStrategyAndSingleton.NoCard;
 import com.example.demo.loyaltyCardsStrategyAndSingleton.PremiumCard;
 import com.example.demo.order.ItemOrders;
 import com.example.demo.order.ItemOrdersService;
+import com.example.demo.sortingStrategy.SortByCategory;
+import com.example.demo.sortingStrategy.SortByManufacturer;
 import com.example.demo.sortingStrategy.SortByName;
+import com.example.demo.sortingStrategy.SortByPrice;
 import com.example.demo.sortingStrategy.SortingContext;
 import com.example.demo.stockState.InStock;
 import com.example.demo.stockState.OutOfStock;
@@ -87,18 +90,45 @@ public class AppController {
 	}
 	
 	@RequestMapping("/sortResults")
-	public String sortResults(@SessionAttribute("searchResults") ArrayList<StockItem> searchStock, HttpServletRequest request, HttpSession session) {
+	public String sortResults(@SessionAttribute("searchResult") ArrayList<StockItem> searchStock, HttpServletRequest request, HttpSession session) {
 		String sortBy = request.getParameter("sortBy");
 		String order = request.getParameter("orderList");
-		
-		 //= (ArrayList<StockItem>) session.getAttribute("searchResult");
-		
 		
 		SortingContext context = new SortingContext();
 		if(sortBy.equals("Title")) {
 			context.setSortingMethod(new SortByName());
 			if(order.equals("Ascending Order")) {
 				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Price")) {
+			context.setSortingMethod(new SortByPrice());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Manufacturer")) {
+			context.setSortingMethod(new SortByManufacturer());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Category")) {
+			context.setSortingMethod(new SortByCategory());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
 			}
 		}
 		
@@ -210,19 +240,19 @@ public class AppController {
 	public String loginUser(@ModelAttribute Customer c, HttpServletRequest request, HttpSession session) {
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		
+		UserType user1;
 		if (custService.getUserByUsernameAndPassword(username, password) != null) {
 			c = custService.getUserByUsernameAndPassword(username, password);
 			session.setAttribute("customer", c);
 			session.setAttribute("loyalty", c.getLoyaltyCard());
 			
-			UserType user1 = new Customer();
+			user1 = new Customer();
 			return user1.login();
 
 		} else if (username.equalsIgnoreCase("Admin") && password.equalsIgnoreCase("Admin123")) {
 			session.setAttribute("admin", username);
-			/*return "adminSuccess";*/
-			UserType user1 = new AdminUser();
+			
+			user1 = new AdminUser();
 			return user1.login();
 
 		} else {
@@ -270,28 +300,29 @@ public class AppController {
 					searchStock.add(s);
 				}
 			}
-			System.out.println(searchStock.size());
-			/*SortingContext context = new SortingContext();
-			context.setSortingMethod(new SortByName());
-			context.sortAscending(searchStock);*/
-			//context.sortDescending(searchStock);
 			
 			session.setAttribute("searchResult", searchStock);
 			
-			/*session.setAttribute("searchBy", type);
-			session.setAttribute("query", searchQ);*/
 			return "searchResults";
 
 		} else if (request.getParameter("manufacturer") != null) {
-			String type = "manufacturer";
-			session.setAttribute("searchBy", type);
-			session.setAttribute("query", searchQ);
+			for(StockItem s: items) {
+				if(s.getManufacturer().contains(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			
+			session.setAttribute("searchResult", searchStock);
 			return "searchResults";
 
 		} else if (request.getParameter("title") != null) {
-			String type = "title";
-			session.setAttribute("searchBy", type);
-			session.setAttribute("query", searchQ);
+			for(StockItem s: items) {
+				if(s.getTitle().contains(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			
+			session.setAttribute("searchResult", searchStock);
 			return "searchResults";
 
 		} else {
@@ -347,7 +378,6 @@ public class AppController {
 		} else if (cardType.equals("MasterCard")) {
 			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
 					expiryDateYear, cvv);
-
 		}
 
 		result = validator.validate();
