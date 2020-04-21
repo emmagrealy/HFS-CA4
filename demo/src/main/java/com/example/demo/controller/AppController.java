@@ -42,7 +42,7 @@ import com.example.demo.stockState.InStock;
 import com.example.demo.stockState.OutOfStock;
 import com.example.demo.stockState.StockState;
 import com.example.demo.user.Customer;
-import com.example.demo.user.CustomerServices;
+import com.example.demo.user.CustomerService;
 
 @Controller
 public class AppController {
@@ -50,7 +50,7 @@ public class AppController {
 	private ArrayList<StockItem> cart = new ArrayList<StockItem>();
 
 	@Autowired
-	private CustomerServices custService;
+	private CustomerService custService;
 
 	@Autowired
 	private StockItemService stockService;
@@ -244,22 +244,18 @@ public class AppController {
 		final ArrayList<ItemOrders> orders;
 		orders = (ArrayList<ItemOrders>) orderService.getAllOrders();		
 		
-		PurchaseHistory purcHist = new PurchaseHistory(orders); //List of all orders made being iterated
-		
+		PurchaseHistory purcHist = new PurchaseHistory(orders); 		//List of all orders made being iterated
 		ArrayList<ItemOrders> listOrders = new ArrayList<ItemOrders>(); //New list that orders for this user added to
 		
-		Set<ItemOrders> theOrder = c.getUserOrders(); //orders belonging to the current customer
-
-		
+		//orders belonging to the current customer
+		Set<ItemOrders> theOrder = c.getUserOrders(); 
 		for (Iterator iter = purcHist.getIterator(); iter.hasNext();) {
 			ItemOrders order = (ItemOrders) iter.next();
-
 			for(ItemOrders o: theOrder) {
 				if (order.getOrderId() == o.getOrderId()) {
 					listOrders.add(o);
 				}
 			}
-
 		}
 		session.setAttribute("purchHist", listOrders);
 		return "purchaseHistory";
@@ -269,8 +265,8 @@ public class AppController {
 	public String customerDetails(HttpSession session) {
 		final ArrayList<Customer> customers;
 		customers = (ArrayList<Customer>) custService.getAllCustomers();
-		CustomerList listCust = new CustomerList(customers);
 		
+		CustomerList listCust = new CustomerList(customers);
 		ArrayList<Customer> listAll = new ArrayList<Customer>();
 		for (Iterator iter = listCust.getIterator(); iter.hasNext();) {
 			Customer name = (Customer) iter.next();
@@ -568,6 +564,7 @@ public class AppController {
 		} else if (cardType.equals("MasterCard")) {
 			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
 					expiryDateYear, cvv);
+
 		}
 
 		result = validator.validate();

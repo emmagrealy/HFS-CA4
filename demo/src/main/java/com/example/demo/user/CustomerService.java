@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomerServices {
+public class CustomerService {
 	
 	@Autowired
 	private CustomerRepository customerRepository;
@@ -28,11 +28,6 @@ public class CustomerServices {
 		Customer c = customerRepository.findByUsernameAndPassword(username, password);
 		return c;
 	}
-	
-	/*public Customer getUserByUsername(String username) {
-		Customer c = customerRepository.findUserByUsername(username);
-		return c;
-	}*/
 	
 	public void addCustomer(Customer c) {
 		customerRepository.save(c);
