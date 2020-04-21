@@ -86,8 +86,14 @@
 						</datalist>
 						<input type="submit" class="btn btn-primary btn-sm"
 							value="Add Review" />
-					</div>
-				</form> <br></td>
+					
+				</form> <br>
+				<form class="form-horizontal" method="post" action="viewReviews">
+					<input type="hidden" name="itemId" value="${stockItem.item_id}" />
+					<input type="submit" class="btn btn-primary btn-sm"
+							value="View Product Reviews" />
+				</form>
+				</td>
 			<td width="100">&nbsp</td>
 			<c:if test="${status.first and status.index % 4 == 4 or status.last}">
 				</tr>

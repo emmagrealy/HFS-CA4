@@ -85,13 +85,38 @@ public class AppController {
 
 	@RequestMapping("/searchProducts")
 	public String searchProductsResults() {
-		
 		return "searchProducts";
+	}
+	
+	@RequestMapping("/adminSearch")
+	public String adminSearch() {
+		return "adminSearch";
 	}
 
 	@RequestMapping("/purchase")
 	public String purchase() {
 		return "purchasePage";
+	}
+	
+	@RequestMapping("/adminSuccess")
+	public String adminSuccess() {
+		return "adminSuccess";
+	}
+	
+	@RequestMapping("/viewReviews")
+	public String viewReviews(HttpServletRequest request, HttpSession session) {
+		int id = Integer.parseInt(request.getParameter("itemId"));
+		StockItem item = stockService.getItemById(id);
+		System.out.println(item.toString());
+		session.setAttribute("reviewItem", item);
+		return "viewReview";
+	}
+	
+	@RequestMapping("purchaseStock")
+	public String purchaseStock(HttpServletRequest request, HttpSession session) {
+		int itemId = Integer.parseInt(request.getParameter("itemId"));
+		session.setAttribute("itemID", itemId);
+		return "purchaseStock";
 	}
 	
 	@RequestMapping("/addReview")
@@ -163,6 +188,53 @@ public class AppController {
 		return "searchResults";
 	}
 	
+	@RequestMapping("/aSortResults")
+	public String aSortResults(@SessionAttribute("searchResult") ArrayList<StockItem> searchStock, HttpServletRequest request, HttpSession session) {
+		String sortBy = request.getParameter("sortBy");
+		String order = request.getParameter("orderList");
+		
+		SortingContext context = new SortingContext();
+		if(sortBy.equals("Title")) {
+			context.setSortingMethod(new SortByName());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Price")) {
+			context.setSortingMethod(new SortByPrice());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Manufacturer")) {
+			context.setSortingMethod(new SortByManufacturer());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		} 
+		else if(sortBy.equals("Category")) {
+			context.setSortingMethod(new SortByCategory());
+			if(order.equals("Ascending Order")) {
+				context.sortAscending(searchStock);
+			}
+			else if(order.equals("Descending Order")) {
+				context.sortDescending(searchStock);
+			}
+		}
+		
+		
+		return "adminSearchResults";
+	}
+	
 	@RequestMapping("/purchaseHistory")
 	public String purchaseHist(HttpServletRequest request, HttpSession session) {
 		int custId = Integer.parseInt(request.getParameter("userId"));
@@ -178,9 +250,6 @@ public class AppController {
 		
 		Set<ItemOrders> theOrder = c.getUserOrders(); //orders belonging to the current customer
 
-		for(ItemOrders o1: theOrder) {
-			System.out.println(o1.toString());
-		}
 		
 		for (Iterator iter = purcHist.getIterator(); iter.hasNext();) {
 			ItemOrders order = (ItemOrders) iter.next();
@@ -188,7 +257,6 @@ public class AppController {
 			for(ItemOrders o: theOrder) {
 				if (order.getOrderId() == o.getOrderId()) {
 					listOrders.add(o);
-					System.out.println(o.toString());
 				}
 			}
 
@@ -321,15 +389,13 @@ public class AppController {
 
 		return "adminSuccess";
 	}
-
-	@RequestMapping("/search")
-	public String searchQ(@RequestParam("searchQ") String searchQ, HttpServletRequest request, HttpSession session) {
+	
+	@RequestMapping("aSearch")
+	public String aSearch(@RequestParam("searchQ") String searchQ, HttpServletRequest request, HttpSession session) {
 		
 		ArrayList<StockItem> items = (ArrayList<StockItem>) stockService.getAllItems();
 		ArrayList<StockItem> searchStock = new ArrayList<StockItem>();
 		if (request.getParameter("category") != null) {
-			System.out.println(items.size());
-			System.out.println(searchQ);
 			for(StockItem s: items) {
 				if(s.getCategory().contains(searchQ)) {
 					searchStock.add(s);
@@ -338,11 +404,50 @@ public class AppController {
 			
 			session.setAttribute("searchResult", searchStock);
 			
+			return "adminSearchResults";
+
+		} else if (request.getParameter("manufacturer") != null) {
+			for(StockItem s: items) {
+				if(s.getManufacturer().equalsIgnoreCase(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			
+			session.setAttribute("searchResult", searchStock);
+			return "adminSearchResults";
+
+		} else if (request.getParameter("title") != null) {
+			for(StockItem s: items) {
+				if(s.getTitle().contains(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			
+			session.setAttribute("searchResult", searchStock);
+			return "adminSearchResults";
+
+		} else {
+			return "adminSearch";
+		}
+	}
+
+	@RequestMapping("/search")
+	public String searchQ(@RequestParam("searchQ") String searchQ, HttpServletRequest request, HttpSession session) {
+		
+		ArrayList<StockItem> items = (ArrayList<StockItem>) stockService.getAllItems();
+		ArrayList<StockItem> searchStock = new ArrayList<StockItem>();
+		if (request.getParameter("category") != null) {
+			for(StockItem s: items) {
+				if(s.getCategory().contains(searchQ)) {
+					searchStock.add(s);
+				}
+			}
+			session.setAttribute("searchResult", searchStock);
 			return "searchResults";
 
 		} else if (request.getParameter("manufacturer") != null) {
 			for(StockItem s: items) {
-				if(s.getManufacturer().contains(searchQ)) {
+				if(s.getManufacturer().equalsIgnoreCase(searchQ)) {
 					searchStock.add(s);
 				}
 			}
@@ -385,7 +490,7 @@ public class AppController {
 			state = hasStock.stateOfStock();
 		}
 		newItem.setState(state);
-		
+
 		HttpSession session = request.getSession();
 		session.setAttribute("list", cart);
 
@@ -439,6 +544,60 @@ public class AppController {
 
 			cart.clear();
 			return "successPage";
+		}
+	}
+	
+	@PostMapping("/stockPurchase")
+	public String stockPurchase(@SessionAttribute("itemID") int itemID, HttpServletRequest request,
+			HttpSession session) {
+
+		String cardName = request.getParameter("cardName");
+		String cardNumber = request.getParameter("cardNumber");
+		int expiryDateMonth = Integer.parseInt(request.getParameter("expiryDateMonth"));
+		int expiryDateYear = Integer.parseInt(request.getParameter("expiryDateYear"));
+		String cvv = request.getParameter("cvv");
+
+		boolean result = false;
+		AbstractCardValidator validator = null;
+
+		String cardType = request.getParameter("cardType");
+		if (cardType.equals("Visa Card")) {
+			validator = new VisaValidation(AppController.this, cardName, cardNumber, expiryDateMonth, 
+					expiryDateYear, cvv);
+
+		} else if (cardType.equals("MasterCard")) {
+			validator = new MastercardValidation(AppController.this, cardName, cardNumber, expiryDateMonth,
+					expiryDateYear, cvv);
+		}
+
+		result = validator.validate();
+
+		if (!result) {
+			request.setAttribute("error", "Invalid Card Details");
+			return "purchasePage";
+			
+		} else {
+			int newQuantity = Integer.parseInt(request.getParameter("quantity"));
+			
+			StockItem item = stockService.getItemById(itemID);
+			int oldQuantity = item.getQuantity();
+			item.setQuantity(oldQuantity + newQuantity);
+			
+			boolean state;
+			StockState noStock = new OutOfStock();
+			StockState hasStock = new InStock();
+			
+			if (item.getQuantity() <= 0) {
+				state = noStock.stateOfStock();
+			}
+			else {
+				state = hasStock.stateOfStock();
+			}
+			item.setState(state);
+			
+			stockService.updateItem(itemID, item);
+
+			return "adminSuccess";
 		}
 	}
 

@@ -1,9 +1,18 @@
 package com.example.demo.decorator;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class AdminUser implements UserType{
 
-	String username;
-	String password;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int adminId;
+	private String username;
+	private String password;
 		
 	public AdminUser() {
 	}	
@@ -24,6 +33,14 @@ public class AdminUser implements UserType{
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public int getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(int adminId) {
+		this.adminId = adminId;
 	}
 
 	@Override
